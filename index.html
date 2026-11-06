@@ -2,106 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Required so mobile browsers scale the image properly to the screen -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Display</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
-        body {
-            background-color: #f7f9fa;
-            min-height: 100vh;
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff; /* Change to #000000 for black background */
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 16px;
+            overflow: hidden; /* Hides scrollbars */
         }
 
-        .card-wrapper {
-            width: 100%;
-            max-width: 440px; /* Standard mobile viewport width */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .display-img {
-            width: 100%;
-            height: auto;
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Preserves aspect ratio without stretching */
             display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            
-            /* Optional: Prevents the default browser callout menu on iOS */
-            -webkit-touch-callout: none;
-            user-select: none;
         }
     </style>
 </head>
 <body>
 
-    <main class="card-wrapper">
-        <!-- The img element starts empty and is populated via JavaScript -->
-        <img id="mainImage" alt="Display" class="display-img">
-    </main>
+    <!-- IMPORTANT: Must match your image's exact name and extension -->
+    <img src="WhatsApp Image 2026-11-03 at 9.58.26 PM.png" alt="Display Image">
 
-    <script>
-        // Configuration:
-        const ACTUAL_IMAGE_SOURCE = "xyz.png";  // The actual file on your site
-        const DESIRED_DOWNLOAD_NAME = "abc.png"; // Name to save as on download
-
-        const imgElement = document.getElementById("mainImage");
-        let imageBlobUrl = null;
-
-        // 1. Fetch image and convert to Blob URL
-        // This removes "xyz.png" from the DOM src and replaces it with "blob:..."
-        fetch(ACTUAL_IMAGE_SOURCE)
-            .then(res => res.blob())
-            .then(blob => {
-                imageBlobUrl = URL.createObjectURL(blob);
-                imgElement.src = imageBlobUrl;
-            })
-            .catch(err => {
-                // Fallback if fetch fails (e.g. running from file:// without local server)
-                imgElement.src = ACTUAL_IMAGE_SOURCE;
-            });
-
-        // 2. Helper function to trigger download with custom name
-        function triggerDownload() {
-            const link = document.createElement("a");
-            link.href = imageBlobUrl || ACTUAL_IMAGE_SOURCE;
-            link.download = DESIRED_DOWNLOAD_NAME;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // 3. Custom Mobile Long-Press Detection (approx. 500ms)
-        let pressTimer = null;
-
-        imgElement.addEventListener("touchstart", (e) => {
-            pressTimer = setTimeout(() => {
-                triggerDownload();
-            }, 500); // 500ms duration qualifies as long-press
-        }, { passive: true });
-
-        imgElement.addEventListener("touchend", () => {
-            clearTimeout(pressTimer);
-        });
-
-        imgElement.addEventListener("touchmove", () => {
-            clearTimeout(pressTimer); // Cancel if user scrolls
-        });
-
-        // 4. Desktop Right-Click Fallback (Context Menu)
-        imgElement.addEventListener("contextmenu", (e) => {
-            e.preventDefault(); // Prevents default context menu showing "xyz.png"
-            triggerDownload();
-        });
-    </script>
 </body>
 </html>
